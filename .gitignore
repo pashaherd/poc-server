@@ -4,6 +4,7 @@ node_modules
 # dependencies
 /node_modules
 /.pnp
+/poc-client
 .pnp.js
 
 # misc

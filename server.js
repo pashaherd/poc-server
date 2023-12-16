@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 import adminRoutes from "./routes/adminRoutes.js";
+import capstoneRoute from './routes/capstoneProject.js'
 import contractorRoutes from "./routes/contractorRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
 
@@ -18,7 +19,7 @@ app.use(compression());
 // Cors setup
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["*"],
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     credentials: true,
   })
@@ -34,13 +35,22 @@ app.use(
   "/assets/",
   express.static(path.join(__dirname, "./assets/profilePhotos/"))
 );
+app.use((req, res, next) => {
+  // Check if the requested file has a .js or .jsx extension
+  if (req.url.endsWith('.js') || req.url.endsWith('.jsx')) {
+    // Set the Content-Type header to 'application/javascript'
+    res.set('Content-Type', 'application/javascript');
+  }
 
+  // Move to the next middleware
+  next();
+});
 // Config dotenv
 dotenv.config();
 
 // host and port environment variables
 const HOST = "http://localhost";
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 //Routes
 
@@ -53,9 +63,11 @@ app.use("/admin", adminRoutes);
 // Contractor routes
 app.use("/contractor", contractorRoutes);
 
+// Capstone Route 
+app.use("/capstone", capstoneRoute)
 // Default route
 app.get("/", (req, res) =>
-  res.status(200).json(`Node and Express server running on port: ${PORT}`)
+  res.status(200).json(`Mode and Express server running on port: ${PORT}`)
 );
 
 // Global error handler
